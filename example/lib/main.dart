@@ -19,9 +19,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   initPlatformState() async {
-    bool keptOn = await Screen.isKeptOn;
-    double brightness = await Screen.brightness;
-    setState((){
+    bool keptOn = (await Screen.isKeptOn) ?? false;
+    double brightness = (await Screen.brightness)!;
+    setState(() {
       _isKeptOn = keptOn;
       _brightness = brightness;
     });
@@ -33,26 +33,30 @@ class _MyAppState extends State<MyApp> {
       home: new Scaffold(
         appBar: new AppBar(title: new Text('Screen plugin example')),
         body: new Center(
-            child: new Column(
-                children: <Widget>[
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      new Text("Screen is kept on ? "),
-                      new Checkbox(value: _isKeptOn, onChanged: (bool b){
-                        Screen.keepOn(b);
-                        setState((){_isKeptOn = b; });
-                      })
-                    ]
-                  ),
-                  new Text("Brightness :"),
-                  new Slider(value : _brightness, onChanged : (double b){
-                    setState((){_brightness = b;});
-                    Screen.setBrightness(b);
-                  })
-                ]
-            )
-        ),
+            child: new Column(children: <Widget>[
+          new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                new Text("Screen is kept on ? "),
+                new Checkbox(
+                    value: _isKeptOn,
+                    onChanged: (bool? b) {
+                      Screen.keepOn(b ?? false);
+                      setState(() {
+                        _isKeptOn = b ?? false;
+                      });
+                    })
+              ]),
+          new Text("Brightness :"),
+          new Slider(
+              value: _brightness,
+              onChanged: (double b) {
+                setState(() {
+                  _brightness = b;
+                });
+                Screen.setBrightness(b);
+              })
+        ])),
       ),
     );
   }
